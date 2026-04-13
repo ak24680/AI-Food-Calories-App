@@ -72,7 +72,7 @@ function App() {
         const base64Data = reader.result.split(",")[1];
         
         // 修正點：使用 gemini-1.5-flash-latest 確保 API 穩定性
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const prompt = "請辨識這張食物照片，並回傳食物名稱、熱量(kcal)、蛋白質(g)、脂肪(g)、碳水(g)。請嚴格以 JSON 格式回傳，範例：{\"name\": \"雞肉沙拉\", \"calories\": 350, \"protein\": 30, \"fat\": 15, \"carbs\": 10}";
 
         const result = await model.generateContent([
