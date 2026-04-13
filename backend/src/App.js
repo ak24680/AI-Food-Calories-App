@@ -7,9 +7,9 @@ import { Camera, Loader2, Calculator, History } from "lucide-react";
 // 1. Firebase 配置：確保 Vercel 環境變數名稱完全一致
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_KEY,
-  authDomain: "android-ai-food-calories-app.firebaseapp.com",
-  projectId: "android-ai-food-calories-app",
-  storageBucket: "android-ai-food-calories-app.firebasestorage.app",
+  authDomain: "ai-food-calories-app.firebaseapp.com",
+  projectId: "ai-food-calories-app",
+  storageBucket: "ai-food-calories-app.firebasestorage.app",
   messagingSenderId: "487212429987",
   appId: "1:487212429987:web:9ced58ba93aa02e7234ca6",
   measurementId: "G-2377TCTZHE"
