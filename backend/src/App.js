@@ -61,7 +61,7 @@ function App() {
       reader.onloadend = async () => {
         const base64Data = reader.result.split(',')[1];
         // 修正模型名稱為 flash-latest 提高相容性，解決 404
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         
         const prompt = "請辨識這張營養成分表圖片。請僅返回 JSON 格式，包含：foodName (食品名稱), calories (熱量kcal), protein (蛋白質g), fat (脂肪g), carbs (碳水g)。如果辨識不到請猜測大概數值。";
         const result = await model.generateContent([
