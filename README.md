@@ -7,5 +7,6 @@
 - 畢業專題計畫書：
 - 成果報告書：
 - 程式：
+- 網線上展示網站：https://vercel.com/ak24680s-projects/ai-food-calories-app-t2ha(https://vercel.com/ak24680s-projects/ai-food-calories-app-t2ha)
 - 簡報：
 - 海報：
