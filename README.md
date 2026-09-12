@@ -1,12 +1,8 @@
 - 專題名稱：Android 熱量追蹤app
 - 組員：
 - 指導老師姓名：陳有科
-- 會議記錄：
-- 開會時間：
 - 主要負責：
 - 畢業專題計畫書：
-- 成果報告書：
+- 成果計劃書：
 - 程式：[index.html](./index.html)
 - 網線上展示網站：[https://vercel.com/ak24680s-projects/ai-food-calories-app-t2ha](https://ai-food-calories-app-t2ha.vercel.app/)
-- 簡報：
-- 海報：
