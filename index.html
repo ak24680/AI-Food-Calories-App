@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NutriScan 健康飲食管理</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--text:#18212f;--muted:#6b7280;--primary:#2f7d68;--primary2:#5aa88f;--danger:#d9534f;--border:#e5e7eb;--shadow:0 10px 30px rgba(30,41,59,.08);--radius:20px}
+*{box-sizing:border-box} body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",sans-serif;background:var(--bg);color:var(--text)}
+button,input,select{font:inherit} button{cursor:pointer;border:0} .app{min-height:100vh}
+header{position:sticky;top:0;z-index:20;background:rgba(245,247,251,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav{max-width:1200px;margin:auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{display:flex;align-items:center;gap:10px;font-weight:800}.logo{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:#dff3eb;color:var(--primary);font-size:22px}.brand small{display:block;font-weight:500;color:var(--muted);font-size:11px}
+.navlinks{display:flex;gap:7px;flex-wrap:wrap}.navlinks button{background:transparent;color:var(--muted);padding:9px 12px;border-radius:10px}.navlinks button.active,.navlinks button:hover{background:#e7f4ef;color:var(--primary);font-weight:700}
+main{max-width:1200px;margin:0 auto;padding:26px 20px 50px}.page{display:none}.page.active{display:block}.hero{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;margin-bottom:24px}.hero h1{margin:0 0 8px;font-size:32px;letter-spacing:-.5px}.hero p{margin:0;color:var(--muted)}
+.grid{display:grid;gap:18px}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}.stat{min-height:145px}.stat .label{color:var(--muted);font-size:14px}.stat .value{font-size:30px;font-weight:800;margin:8px 0 4px}.stat .sub{font-size:13px;color:var(--muted)}
+.section-title{margin:0 0 16px;font-size:19px}.kpi{display:flex;justify-content:space-between;gap:10px;align-items:center}.pill{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;font-size:12px;background:#eef2f7;color:#506074}.pill.good{background:#e4f5ee;color:#226b55}.pill.warn{background:#fff2df;color:#9a5b00}.pill.bad{background:#ffe9e7;color:#9e2721}
+.progress-wrap{margin:14px 0}.progress{height:11px;background:#edf0f4;border-radius:999px;overflow:hidden}.bar{height:100%;background:var(--primary2);border-radius:999px;transition:width .35s}.bar.over{background:var(--danger)}.bar.low{background:#e0a22f}.progress-row{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:7px}
+form{display:grid;gap:14px}.field{display:grid;gap:7px}.field label{font-size:13px;color:#4b5563;font-weight:700}input,select{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:12px;background:#fff;outline:none}input:focus,select:focus{border-color:#8ac7b4;box-shadow:0 0 0 3px rgba(90,168,143,.12)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}.btn{padding:11px 15px;border-radius:12px;font-weight:700}.btn.primary{background:var(--primary);color:#fff}.btn.secondary{background:#e8f2ef;color:var(--primary)}.btn.ghost{background:#f0f2f5;color:#475569}.btn.danger{background:#ffe7e5;color:#9e2721}.btn:disabled{opacity:.55;cursor:not-allowed}
+.profile-layout{grid-template-columns:1.05fr .95fr}field-inline{display:grid;grid-template-columns:1fr 1fr;gap:10px}.food-list{display:grid;gap:11px}.food-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 14px;border:1px solid var(--border);border-radius:14px}.food-main{min-width:0}.food-name{font-weight:800}.food-meta{font-size:12px;color:var(--muted);margin-top:3px}.food-actions{display:flex;gap:7px;align-items:center}.smallbtn{padding:7px 9px;border-radius:9px;background:#f1f3f5;color:#4b5563}.empty{padding:34px;text-align:center;color:var(--muted)}
+.chart{height:260px;display:flex;align-items:flex-end;gap:12px;padding:18px 8px 6px;overflow:auto}.chart-col{min-width:46px;display:flex;flex-direction:column;align-items:center;gap:7px;height:100%;justify-content:flex-end}.chart-bar{width:26px;border-radius:8px 8px 3px 3px;background:var(--primary2);min-height:4px}.chart-col span{font-size:11px;color:var(--muted);white-space:nowrap}.chart-col b{font-size:11px}.notice{padding:12px 14px;border-radius:13px;background:#f3f7fb;color:#526174;font-size:13px}.footer-note{margin-top:22px;color:#8a95a4;font-size:12px;line-height:1.7}
+@media(max-width:960px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.profile-layout,.g3{grid-template-columns:1fr}}
+@media(max-width:640px){.nav{align-items:flex-start;flex-direction:column}.navlinks{width:100%;overflow:auto;flex-wrap:nowrap}.navlinks button{white-space:nowrap}.hero{flex-direction:column}.hero h1{font-size:26px}.g4,.g2{grid-template-columns:1fr}.card{padding:16px}.stat{min-height:auto}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="nav">
+  <div class="brand"><div class="logo">🥗</div><div>NutriScan<small>飲食熱量與健康管理</small></div></div>
+  <nav class="navlinks">
+    <button data-page="dashboard" class="active">總覽</button><button data-page="scan">新增食物</button><button data-page="log">飲食紀錄</button><button data-page="history">歷史統計</button><button data-page="profile">我的資料</button>
+  </nav>
+</div></header>
+<main>
+<section id="dashboard" class="page active">
+  <div class="hero"><div><h1>今天吃得怎麼樣？</h1><p id="dashDate"></p></div><button class="btn primary" onclick="go('scan')">＋ 新增食物</button></div>
+  <div class="grid g4" id="statGrid"></div>
+  <div class="grid g2" style="margin-top:18px">
+    <div class="card"><h2 class="section-title">今日營養進度</h2><div id="macroProgress"></div></div>
+    <div class="card"><h2 class="section-title">今日飲食</h2><div id="todayList" class="food-list"></div></div>
+  </div>
+</section>
+
+<section id="scan" class="page">
+  <div class="hero"><div><h1>新增飲食</h1><p>手動輸入食物與營養成分，加入今天的飲食紀錄。</p></div></div>
+  <div class="grid" style="grid-template-columns:minmax(0,720px);justify-content:center">
+    <div class="card">
+      <form id="foodForm">
+        <div class="field"><label>食物名稱</label><input id="foodName" required placeholder="例：雞胸肉便當" /></div>
+        <div class="field-inline">
+          <div class="field"><label>份量</label><input id="serving" type="number" step="0.1" value="1" min="0.1" /></div>
+          <div class="field"><label>熱量 kcal</label><input id="kcal" type="number" step="0.1" min="0" required /></div>
+        </div>
+        <div class="field-inline">
+          <div class="field"><label>蛋白質 g</label><input id="protein" type="number" step="0.1" min="0" value="0" /></div>
+          <div class="field"><label>脂肪 g</label><input id="fat" type="number" step="0.1" min="0" value="0" /></div>
+        </div>
+        <div class="field-inline">
+          <div class="field"><label>碳水 g</label><input id="carbs" type="number" step="0.1" min="0" value="0" /></div>
+          <div class="field"><label>鈉 mg</label><input id="sodium" type="number" step="1" min="0" value="0" /></div>
+        </div>
+        <div class="field"><label>餐別</label><select id="meal"><option>早餐</option><option>午餐</option><option>晚餐</option><option>點心</option></select></div>
+        <div class="actions"><button class="btn primary" type="submit">加入今日飲食</button><button class="btn ghost" type="button" id="fillDemo">填入示範</button></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section id="log" class="page"><div class="hero"><div><h1>飲食紀錄</h1><p>查看今天每一餐的攝取情況。</p></div><button class="btn primary" onclick="go('scan')">＋ 新增食物</button></div>
+  <div class="card"><div class="kpi"><h2 class="section-title" style="margin:0">今日紀錄</h2><span class="pill" id="logTotal"></span></div><div id="fullList" class="food-list" style="margin-top:14px"></div></div>
+</section>
+
+<section id="history" class="page"><div class="hero"><div><h1>歷史統計</h1><p>最近 7 天的熱量紀錄。</p></div></div>
+  <div class="card"><h2 class="section-title">每日熱量</h2><div id="historyChart" class="chart"></div></div>
+  <div class="grid g3" style="margin-top:18px" id="historyCards"></div>
+</section>
+
+<section id="profile" class="page"><div class="hero"><div><h1>我的資料</h1><p>設定一次，之後自動估算每日需求。</p></div></div>
+  <div class="grid profile-layout">
+    <div class="card"><h2 class="section-title">基本資料</h2><form id="profileForm">
+      <div class="field-inline"><div class="field"><label>年齡</label><input id="age" type="number" min="10" max="100" required /></div><div class="field"><label>生理性別</label><select id="sex"><option value="female">女性</option><option value="male">男性</option></select></div></div>
+      <div class="field-inline"><div class="field"><label>身高 cm</label><input id="height" type="number" min="100" max="230" step="0.1" required /></div><div class="field"><label>體重 kg</label><input id="weight" type="number" min="25" max="250" step="0.1" required /></div></div>
+      <div class="field"><label>活動量</label><select id="activity"><option value="1.2">久坐（幾乎沒有運動）</option><option value="1.375">輕度（每週 1–3 天）</option><option value="1.55">中度（每週 3–5 天）</option><option value="1.725">高度（每週 6–7 天）</option><option value="1.9">非常高度（體力工作／高強度訓練）</option></select></div>
+      <div class="field"><label>目標</label><select id="goal"><option value="maintain">維持體重</option><option value="lose">減重</option><option value="gain">增重</option></select></div>
+      <button class="btn primary" type="submit">儲存資料並重新計算</button>
+    </form></div>
+    <div class="card"><h2 class="section-title">身體與每日需求</h2><div id="profileSummary"></div></div>
+  </div>
+  <div class="footer-note">本網站提供的是一般性營養計算與紀錄工具，不取代醫師、營養師或其他專業醫療建議。BMI、BMR/TDEE 皆屬估算值。</div>
+</section>
+</main>
+</div>
+<script>
+const KEY='nutriscan_v1';
+const defaultState={profile:{age:20,sex:'female',height:165,weight:55,activity:1.375,goal:'maintain'},logs:{}};
+let state=JSON.parse(localStorage.getItem(KEY)||'null')||defaultState;
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+function todayKey(d=new Date()){return d.toISOString().slice(0,10)}
+function dayLabel(key){return new Date(key+'T00:00:00').toLocaleDateString('zh-TW',{month:'numeric',day:'numeric'})}
+function calc(){let p=state.profile; const bmi=p.weight/((p.height/100)**2); const bmr=10*p.weight+6.25*p.height-5*p.age+(p.sex==='male'?5:-161); let tdee=bmr*Number(p.activity); if(p.goal==='lose')tdee-=400;if(p.goal==='gain')tdee+=300; return {bmi,bmr,tdee}}
+function getToday(){return state.logs[todayKey()]||[]}
+function totals(log=getToday()){return log.reduce((a,x)=>{a.kcal+=+x.kcal||0;a.protein+=+x.protein||0;a.fat+=+x.fat||0;a.carbs+=+x.carbs||0;a.sodium+=+x.sodium||0;return a},{kcal:0,protein:0,fat:0,carbs:0,sodium:0})}
+function go(page){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===page));document.querySelectorAll('.navlinks button').forEach(x=>x.classList.toggle('active',x.dataset.page===page));renderAll();window.scrollTo({top:0,behavior:'smooth'})}
+window.go=go;
+document.querySelectorAll('.navlinks button').forEach(b=>b.onclick=()=>go(b.dataset.page));
+function fmt(n){return Math.round(n*10)/10}
+function bmiClass(b){return b<18.5?'偏低':b<24?'正常':b<27?'過重':'偏高'}
+function renderDashboard(){const c=calc(),t=totals();document.getElementById('dashDate').textContent=new Date().toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+const left=Math.max(0,c.tdee-t.kcal);document.getElementById('statGrid').innerHTML=[['今日熱量',fmt(t.kcal)+' kcal','目標 '+Math.round(c.tdee)+' kcal'],['BMI',fmt(c.bmi),bmiClass(c.bmi)],['蛋白質',fmt(t.protein)+' g','今日攝取'],['剩餘熱量',Math.round(left)+' kcal',left<=0?'已達目標':'可再攝取']].map((s,i)=>`<div class="card stat"><div class="label">${s[0]}</div><div class="value">${s[1]}</div><div class="sub">${s[2]}</div></div>`).join('');
+const ranges=[
+  ['蛋白質',t.protein,Math.max(45,state.profile.weight*1.0),Math.max(45,state.profile.weight*1.6),'g'],
+  ['脂肪',t.fat,c.tdee*0.20/9,c.tdee*0.35/9,'g'],
+  ['碳水',t.carbs,c.tdee*0.45/4,c.tdee*0.65/4,'g'],
+  ['鈉',t.sodium,500,2300,'mg']
+];
+function rangeStatus(value,min,max){
+  if(value<min)return {text:'⚠️ 攝取偏低',cls:'warn',bar:'low'};
+  if(value>max)return {text:'⚠️ 攝取過高',cls:'bad',bar:'over'};
+  return {text:'✓ 健康',cls:'good',bar:''};
+}
+document.getElementById('macroProgress').innerHTML=ranges.map(r=>{
+  const st=rangeStatus(r[1],r[2],r[3]);
+  const pct=Math.max(2,Math.min(100,(r[1]/r[3])*100));
+  return `<div class="progress-wrap"><div class="progress-row"><span>${r[0]}</span><span>${fmt(r[1])} / ${fmt(r[2])}–${fmt(r[3])} ${r[4]} <span class="pill ${st.cls}" style="margin-left:6px">${st.text}</span></span></div><div class="progress"><div class="bar ${st.bar}" style="width:${pct}%"></div></div></div>`
+}).join('');
+const list=getToday();document.getElementById('todayList').innerHTML=list.length?list.slice(-5).reverse().map(foodHtml).join(''):'<div class="empty">今天還沒有飲食紀錄</div>'}
+function foodHtml(x,idx){return `<div class="food-item"><div class="food-main"><div class="food-name">${esc(x.name)}</div><div class="food-meta">${x.meal} · ${x.serving||1} 份 · ${fmt(x.kcal)} kcal · P ${fmt(x.protein)}g · F ${fmt(x.fat)}g · C ${fmt(x.carbs)}g</div></div><div class="food-actions"><span class="pill">鈉 ${fmt(x.sodium)}mg</span>${idx!==undefined?`<button class="smallbtn" onclick="removeFood(${idx})">刪除</button>`:''}</div></div>`}
+function renderLog(){let list=getToday();document.getElementById('logTotal').textContent=`${list.length} 筆 · ${Math.round(totals().kcal)} kcal`;document.getElementById('fullList').innerHTML=list.length?list.map((x,i)=>foodHtml(x,i)).join(''):'<div class="empty">尚無紀錄，先新增一份食物吧。</div>'}
+function removeFood(i){let k=todayKey();state.logs[k].splice(i,1);save();renderAll()}
+window.removeFood=removeFood;
+function renderHistory(){let days=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);let key=todayKey(d),sum=totals(state.logs[key]||[]);days.push({key,kcal:sum.kcal})}let max=Math.max(1,...days.map(d=>d.kcal));document.getElementById('historyChart').innerHTML=days.map(d=>`<div class="chart-col"><b>${Math.round(d.kcal)}</b><div class="chart-bar" style="height:${Math.max(4,d.kcal/max*170)}px"></div><span>${dayLabel(d.key)}</span></div>`).join('');const c=calc();document.getElementById('historyCards').innerHTML=days.slice().reverse().map(d=>`<div class="card"><div class="kpi"><strong>${dayLabel(d.key)}</strong><span class="pill ${d.kcal<=c.tdee?'good':'warn'}">${Math.round(d.kcal)} kcal</span></div><div class="sub" style="margin-top:10px;color:var(--muted)">${d.kcal===0?'無紀錄':d.kcal<=c.tdee?'低於／符合目標':'高於今日目標'}</div></div>`).join('')}
+function renderProfile(){let p=state.profile,c=calc();['age','sex','height','weight','activity','goal'].forEach(id=>document.getElementById(id).value=p[id]);document.getElementById('profileSummary').innerHTML=`<div class="grid g2"><div class="card" style="box-shadow:none;background:#f7faf9"><div class="label">BMI</div><div class="value" style="font-size:26px">${fmt(c.bmi)}</div><span class="pill good">${bmiClass(c.bmi)}</span></div><div class="card" style="box-shadow:none;background:#f7faf9"><div class="label">BMR</div><div class="value" style="font-size:26px">${Math.round(c.bmr)}</div><div class="sub">kcal / 天</div></div><div class="card" style="box-shadow:none;background:#f7faf9"><div class="label">TDEE</div><div class="value" style="font-size:26px">${Math.round(c.tdee)}</div><div class="sub">每日目標熱量</div></div><div class="card" style="box-shadow:none;background:#f7faf9"><div class="label">目標</div><div class="value" style="font-size:20px">${({maintain:'維持體重',lose:'減重',gain:'增重'})[p.goal]}</div></div></div>`}
+function renderAll(){renderDashboard();renderLog();renderHistory();renderProfile()}
+function esc(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+
+document.getElementById('profileForm').onsubmit=e=>{e.preventDefault();state.profile={age:+age.value,sex:sex.value,height:+height.value,weight:+weight.value,activity:+activity.value,goal:goal.value};save();renderAll();alert('資料已儲存！')}
+document.getElementById('foodForm').onsubmit=e=>{e.preventDefault();let item={name:foodName.value.trim(),serving:+serving.value||1,kcal:+kcal.value||0,protein:+protein.value||0,fat:+fat.value||0,carbs:+carbs.value||0,sodium:+sodium.value||0,meal:meal.value,at:new Date().toISOString()};let k=todayKey();state.logs[k]??=[];state.logs[k].push(item);save();e.target.reset();serving.value=1;go('log')}
+document.getElementById('fillDemo').onclick=()=>{foodName.value='高蛋白雞胸便當';serving.value=1;kcal.value=520;protein.value=42;fat.value=15;carbs.value=49;sodium.value=840;meal.value='午餐'}
+renderAll();
+</script>
+</body>
+</html>
