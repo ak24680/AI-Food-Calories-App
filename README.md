@@ -10,6 +10,6 @@
 * 指導老師姓名：陳有科
 * 主要負責：
 * 畢業專題計畫書：
-* 成果報告書：[飲食營養標示辨識系統.pdf]
+* 成果報告書：飲食營養標示辨識系統.pdf
 * 程式：[index.html](./index.html)
 * 網線上展示網站：[https://vercel.com/ak24680s-projects/ai-food-calories-app-t2ha](https://ai-food-calories-app-t2ha.vercel.app/)
