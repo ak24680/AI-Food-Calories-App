@@ -11,4 +11,4 @@
 * 畢業專題計畫書：飲食營養標示辨識與健康管理系統.pdf
 * 成果報告書：飲食營養標示辨識系統.pdf
 * 程式：[index.html](./index.html)
-* 網線上展示網站：[(https://ckyg.github.io/NutriScan/)]((https://ckyg.github.io/NutriScan/))
+* 網線上展示網站：[https://ckyg.github.io/NutriScan/](https://ckyg.github.io/NutriScan/)
