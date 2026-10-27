@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#2f7d68" />
+<title>NutriScan 健康飲食管理</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--text:#18212f;--muted:#6b7280;--primary:#2f7d68;--primary2:#5aa88f;--danger:#d9534f;--border:#e5e7eb;--shadow:0 10px 30px rgba(30,41,59,.08);--radius:20px}
+*{box-sizing:border-box} body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",sans-serif;background:var(--bg);color:var(--text)}
+button,input,select{font:inherit} button{cursor:pointer;border:0} .app{min-height:100vh}
+header{position:sticky;top:0;z-index:20;background:rgba(245,247,251,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav{max-width:1200px;margin:auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{display:flex;align-items:center;gap:10px;font-weight:800}.logo{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:#dff3eb;color:var(--primary);font-size:22px}.brand small{display:block;font-weight:500;color:var(--muted);font-size:11px}
+.navlinks{display:flex;gap:7px;flex-wrap:wrap}.navlinks button{background:transparent;color:var(--muted);padding:9px 12px;border-radius:10px}.navlinks button.active,.navlinks button:hover{background:#e7f4ef;color:var(--primary);font-weight:700}
+main{max-width:1200px;margin:0 auto;padding:26px 20px 50px}.page{display:none}.page.active{display:block}.hero{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;margin-bottom:24px}.hero h1{margin:0 0 8px;font-size:32px;letter-spacing:-.5px}.hero p{margin:0;color:var(--muted)}
+.grid{display:grid;gap:18px}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}.stat{min-height:145px}.stat .label{color:var(--muted);font-size:14px}.stat .value{font-size:30px;font-weight:800;margin:8px 0 4px}.stat .sub{font-size:13px;color:var(--muted)}
+.section-title{margin:0 0 16px;font-size:19px}.kpi{display:flex;justify-content:space-between;gap:10px;align-items:center}.pill{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;font-size:12px;background:#eef2f7;color:#506074}.pill.good{background:#e4f5ee;color:#226b55}.pill.warn{background:#fff2df;color:#9a5b00}.pill.bad{background:#ffe9e7;color:#9e2721}
+.progress-wrap{margin:14px 0}.progress{height:11px;background:#edf0f4;border-radius:999px;overflow:hidden}.bar{height:100%;background:var(--primary2);border-radius:999px;transition:width .35s}.bar.over{background:var(--danger)}.bar.low{background:#e0a22f}.progress-row{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:7px}
+form{display:grid;gap:14px}.field{display:grid;gap:7px}.field label{font-size:13px;color:#4b5563;font-weight:700}input,select{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:12px;background:#fff;outline:none}input:focus,select:focus{border-color:#8ac7b4;box-shadow:0 0 0 3px rgba(90,168,143,.12)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}.btn{padding:11px 15px;border-radius:12px;font-weight:700}.btn.primary{background:var(--primary);color:#fff}.btn.secondary{background:#e8f2ef;color:var(--primary)}.btn.ghost{background:#f0f2f5;color:#475569}.btn.danger{background:#ffe7e5;color:#9e2721}.btn:disabled{opacity:.55;cursor:not-allowed}
+.profile-layout{grid-template-columns:1.05fr .95fr} field-inline{display:grid;grid-template-columns:1fr 1fr;gap:10px}.food-list{display:grid;gap:11px}.food-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 14px;border:1px solid var(--border);border-radius:14px;transition:background 0.2s}.food-main{min-width:0}.food-name{font-weight:800}.food-meta{font-size:12px;color:var(--muted);margin-top:3px}.food-actions{display:flex;gap:7px;align-items:center}.smallbtn{padding:7px 9px;border-radius:9px;background:#f1f3f5;color:#4b5563}.empty{padding:34px;text-align:center;color:var(--muted)}
+.chart{height:260px;display:flex;align-items:flex-end;gap:12px;padding:18px 8px 6px;overflow:auto}.chart-col{min-width:46px;display:flex;flex-direction:column;align-items:center;gap:7px;height:100%;justify-content:flex-end}.chart-bar{width:26px;border-radius:8px 8px 3px 3px;background:var(--primary2);min-height:4px}.chart-col span{font-size:11px;color:var(--muted);white-space:nowrap}.chart-col b{font-size:11px}.notice{padding:12px 14px;border-radius:13px;background:#f3f7fb;color:#526174;font-size:13px}.footer-note{margin-top:22px;color:#8a95a4;font-size:12px;line-height:1.7}
+
+.scan-layout { grid-template-columns: 1fr 1fr; align-items: start; }
+.search-container { display: flex; flex-direction: column; gap: 12px; height: 100%; }
+.search-input-wrapper { position: relative; }
+.search-input-wrapper input { padding-left: 36px; }
+.search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); opacity: 0.5; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+.chip { padding: 6px 12px; border-radius: 20px; background: #f0f2f5; color: var(--muted); font-size: 13px; cursor: pointer; transition: 0.2s; border: none; }
+.chip:hover { background: #e2e8f0; }
+.chip.active { background: var(--primary); color: #fff; font-weight: bold; }
+.db-list-scroll { max-height: 480px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
+.db-list-scroll::-webkit-scrollbar { width: 6px; }
+.db-list-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.food-item.clickable:hover { background: #f8fafc; cursor: pointer; border-color: var(--primary2); }
+
+@media(max-width:960px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.profile-layout,.g3{grid-template-columns:1fr}}
+@media(max-width:768px){.scan-layout{grid-template-columns:1fr;}}
+@media(max-width:640px){.nav{align-items:flex-start;flex-direction:column}.navlinks{width:100%;overflow:auto;flex-wrap:nowrap}.navlinks button{white-space:nowrap}.hero{flex-direction:column}.hero h1{font-size:26px}.g4,.g2{grid-template-columns:1fr}.card{padding:16px}.stat{min-height:auto}}
+
+/* OCR 掃描及手機版優化 */
+[hidden]{display:none!important}
+.ocr-panel{margin-bottom:20px;overflow:hidden}
+.ocr-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.ocr-head .section-title{margin:0}
+.ocr-step{font-size:12px;font-weight:800;color:var(--primary);background:#e8f4ef;padding:6px 10px;border-radius:100px}
+.ocr-intro{font-size:13px;color:var(--muted);line-height:1.7;margin:0 0 14px}
+.ocr-actions{display:flex;gap:9px;flex-wrap:wrap}
+.ocr-actions .btn{min-height:45px}
+.ocr-display{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:16px;align-items:start}
+.ocr-photo,.ocr-results{border-radius:14px;border:1px dashed #d5e2df;background:#f8fbfa;min-height:170px;padding:13px}
+.ocr-photo{display:grid;place-items:center;position:relative;overflow:hidden}
+.ocr-photo img{width:100%;max-height:330px;object-fit:contain;border-radius:10px}
+.ocr-placeholder{text-align:center;color:#768b87;font-size:13px;line-height:1.8;padding:25px 10px}
+.camera-box{margin-top:14px;padding:10px;border-radius:14px;background:#142c28;color:white}
+.camera-box video{display:block;width:100%;max-height:380px;object-fit:contain;background:#000;border-radius:10px}
+.camera-box .actions{padding:12px 2px 2px}
+.ocr-state{margin:11px 0;font-size:13px;line-height:1.65;min-height:24px;color:#506074}
+.ocr-state.error{color:#a02d23}
+.ocr-state.ok{color:#237055}
+.ocr-results h3{margin:0 0 10px;font-size:14px}
+.ocr-line{display:flex;justify-content:space-between;align-items:baseline;gap:10px;border-bottom:1px solid #e3eeeb;padding:7px 0;font-size:13px}
+.ocr-line:last-child{border-bottom:0}
+.ocr-line strong{font-variant-numeric:tabular-nums}
+.ocr-results .notice{margin-top:10px;background:#fff8ea;color:#886125}
+.ocr-controls{display:flex;align-items:end;gap:10px;flex-wrap:wrap;margin-top:14px}
+.ocr-controls .field{max-width:280px;flex:1 1 230px}
+.ocr-controls button{min-height:44px}
+.ocr-details{margin-top:13px;border-top:1px solid var(--border);padding-top:12px;font-size:13px;color:var(--muted)}
+.ocr-details summary{cursor:pointer;font-weight:700;color:#41665c;padding:6px 0}
+.ocr-details textarea{width:100%;min-height:150px;padding:12px;resize:vertical;border:1px solid #d9e3e0;border-radius:12px;background:white;font:13px/1.5 ui-monospace,monospace;margin:9px 0}
+.ocr-hint{font-size:12px;color:var(--muted);line-height:1.7;margin-top:10px}
+.ocr-row-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.ocr-row-actions .smallbtn{background:#e7f4ef;color:#256b57}
+.ocr-label{color:#374b48;font-size:12px;font-weight:700;letter-spacing:.01em}
+.ocr-autoscan{display:flex;align-items:center;gap:9px;margin-top:12px;font-size:13px;color:#396458;cursor:pointer}
+.ocr-autoscan input{width:17px;height:17px;accent-color:var(--primary);flex-shrink:0}
+.ocr-line em{font-size:11px;color:#a76c16;font-style:normal;margin-left:7px}
+
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #9ecdbc;outline-offset:2px}
+@media(max-width:768px){
+ .ocr-display{grid-template-columns:1fr}
+ .ocr-photo,.ocr-results{min-height:auto}
+ .ocr-photo{min-height:155px}
+ .ocr-actions .btn{flex:1 1 135px}
+ .ocr-controls .field{max-width:none;flex-basis:100%}
+ .ocr-controls .btn{flex:1}
+ .navlinks{scrollbar-width:thin;max-width:100%;padding-bottom:3px}
+ .navlinks button{min-height:43px}
+ .food-item{align-items:flex-start}
+ .food-actions{flex-shrink:0}
+ .food-meta{line-height:1.6}
+}
+@media(max-width:430px){
+ main{padding:16px 12px 36px}.nav{padding:10px 12px}
+ .hero{gap:12px;margin-bottom:16px}.hero h1{font-size:24px}
+ .ocr-panel{padding:14px}
+ .ocr-head{align-items:flex-start}
+ .ocr-head .section-title{font-size:17px}
+ .ocr-actions{gap:7px}
+ .ocr-actions .btn{font-size:14px;padding:11px 9px}
+ .food-actions .pill{font-size:11px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="nav">
+  <div class="brand"><div class="logo">🥗</div><div>NutriScan<small>飲食熱量與健康管理</small></div></div>
+  <nav class="navlinks">
+    <button data-page="dashboard" class="active">總覽</button><button data-page="scan">新增食物</button><button data-page="log">飲食紀錄</button><button data-page="history">歷史統計</button><button data-page="profile">我的資料</button>
+  </nav>
+</div></header>
+<main>
+<section id="dashboard" class="page active">
+  <div class="hero"><div><h1>今天吃得怎麼樣？</h1><p id="dashDate"></p></div><button class="btn primary" onclick="go('scan')">＋ 新增食物</button></div>
+  <div class="grid g4" id="statGrid"></div>
+  <div class="grid g2" style="margin-top:18px">
+    <div class="card"><h2 class="section-title">今日營養進度</h2><div id="macroProgress"></div></div>
+    <div class="card"><h2 class="section-title">今日飲食</h2><div id="todayList" class="food-list"></div></div>
+  </div>
+</section>
+
+<section id="scan" class="page">
+  <div class="hero"><div><h1>新增飲食</h1><p>從資料庫選取或手動輸入食物，加入今天的紀錄。</p></div></div>
+
+  <!-- 智慧營養標示掃描：相機拍照、相簿上傳與本機 OCR -->
+  <section class="card ocr-panel" aria-labelledby="ocrTitle">
+    <div class="ocr-head"><h2 id="ocrTitle" class="section-title">📷 智慧營養標示掃描（OCR）</h2><span class="ocr-step">OCR 校驗加強版 v5</span></div>
+    <p class="ocr-intro">對準包裝上的「營養標示」拍照或上傳圖片；載入後會自動辨識，並以影像增強和雙欄分析提高辨識率。完成後請核對包裝數值。</p>
+    <div class="ocr-actions">
+      <button type="button" class="btn primary" id="ocrTakePhotoBtn">📱 手機拍照</button>
+      <button type="button" class="btn secondary" id="ocrLiveBtn">🎥 開啟鏡頭</button>
+      <button type="button" class="btn ghost" id="ocrUploadBtn">🖼️ 上傳照片</button>
+    </div>
+    <label class="ocr-autoscan"><input type="checkbox" id="ocrAutoScan" checked /> 上傳或拍照後自動開始辨識（建議開啟）</label>
+    <input id="ocrCameraInput" type="file" accept="image/*" capture="environment" hidden aria-label="用相機拍攝營養標示" />
+    <input id="ocrFileInput" type="file" accept="image/*" hidden aria-label="上傳營養標示照片" />
+    <div class="camera-box" id="ocrCameraWrap" hidden>
+      <video id="ocrVideo" playsinline autoplay muted aria-label="即時鏡頭畫面"></video>
+      <div class="actions"><button type="button" class="btn primary" id="ocrCaptureBtn">📸 拍下標示</button><button type="button" class="btn secondary" id="ocrTorchBtn" hidden disabled>🔦 開啟手電筒</button><button type="button" class="btn ghost" id="ocrStopBtn">關閉鏡頭</button></div>
+    </div>
+    <div class="ocr-display">
+      <div>
+        <div class="ocr-photo" id="ocrPhotoBox">
+          <div class="ocr-placeholder" id="ocrEmpty">尚未選擇照片<br>請讓營養標示置中、文字清楚、避免反光</div>
+          <img id="ocrPreview" alt="待辨識的營養標示照片" hidden />
+        </div>
+        <div class="ocr-row-actions" id="ocrPhotoTools" hidden><button type="button" class="smallbtn" id="ocrRotateBtn">↻ 旋轉照片 90°</button><button type="button" class="smallbtn" id="ocrResetBtn">移除照片</button></div>
+        <div id="ocrStatus" class="ocr-state" role="status" aria-live="polite">尚未開始辨識</div>
+        <button type="button" class="btn primary" id="ocrRecognizeBtn" disabled>🔎 開始 OCR 辨識</button>
+      </div>
+      <div>
+        <div class="ocr-results" id="ocrResults">
+          <h3>辨識結果預覽</h3>
+          <div id="ocrDetected"> <div class="ocr-placeholder">辨識完成後，這裡會顯示熱量、蛋白質、脂肪、碳水與鈉。</div></div>
+        </div>
+        <div class="ocr-controls">
+          <div class="field"><label for="ocrColumnMode">營養數值欄位</label><select id="ocrColumnMode"><option value="0">第 1 欄（每份）</option><option value="1">第 2 欄（每 100 公克／毫升）</option></select></div>
+          <button type="button" class="btn secondary" id="ocrApplyBtn" disabled>✓ 套用到營養表單</button>
+        </div>
+        <div class="ocr-hint" id="ocrHint">預設使用「每份」；切換「每 100 公克／毫升」時會檢查小數點與數值比例，校正結果仍需對照原圖。</div>
+      </div>
+    </div>
+    <details class="ocr-details" id="ocrDetails"><summary>展開 OCR 文字（可修改並重新解析）</summary>
+      <label class="ocr-label" for="ocrRawText">辨識出的完整文字</label>
+      <textarea id="ocrRawText" placeholder="OCR 辨識文字會顯示在這裡。也可貼上營養標示文字，測試自動解析。"></textarea>
+      <button type="button" class="btn ghost" id="ocrParseBtn">重新解析文字</button>
+    </details>
+    <p class="ocr-hint">掃描採用本機圖片增強＋繁體中文 OCR，首次使用需要網路下載辨識引擎。若包裝有兩欄，會利用份量比例與三大營養素進行交叉核對，必要時修正小數點；但仍應以原圖數字為準。若辨識失敗，可展開 OCR 文字自行修改並重新解析。</p>
+  </section>
+  <div class="grid scan-layout">
+    
+    <!-- 左側：食物資料庫 -->
+    <div class="card search-container">
+      <h2 class="section-title" style="margin-bottom: 8px;">內建食物庫 (每 100g)</h2>
+      <div class="search-input-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="搜尋食物名稱..." oninput="filterDatabase()" />
+      </div>
+      <div class="chips" id="categoryChips">
+        <button class="chip active" onclick="setCategory('all')">全部</button>
+        <button class="chip" onclick="setCategory('meat')">肉類/海鮮</button>
+        <button class="chip" onclick="setCategory('carb')">主食/澱粉</button>
+        <button class="chip" onclick="setCategory('veg')">蔬菜</button>
+        <button class="chip" onclick="setCategory('fruit')">水果</button>
+        <button class="chip" onclick="setCategory('drink')">飲品</button>
+      </div>
+      <div class="db-list-scroll" id="dbListContainer">
+        <!-- 資料庫內容會由 JS 產生 -->
+      </div>
+    </div>
+
+    <!-- 右側：手動輸入表單 -->
+    <div class="card" id="formCard">
+      <h2 class="section-title" style="margin-bottom: 14px;">營養素明細</h2>
+      <form id="foodForm">
+        <div class="field"><label>食物名稱</label><input id="foodName" required placeholder="例：雞胸肉便當" /></div>
+        <div class="field-inline" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field"><label>份量 (倍數)</label><input id="serving" type="number" step="0.1" value="1" min="0.1" /></div>
+          <div class="field"><label>熱量 kcal</label><input id="kcal" type="number" step="any" min="0" required /></div>
+        </div>
+        <div class="field-inline" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field"><label>蛋白質 g</label><input id="protein" type="number" step="any" min="0" value="0" /></div>
+          <div class="field"><label>脂肪 g</label><input id="fat" type="number" step="any" min="0" value="0" /></div>
+        </div>
+        <div class="field-inline" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field"><label>碳水 g</label><input id="carbs" type="number" step="any" min="0" value="0" /></div>
+          <div class="field"><label>鈉 mg</label><input id="sodium" type="number" step="any" min="0" value="0" /></div>
+        </div>
+        <div class="field"><label>餐別</label><select id="meal"><option>早餐</option><option>午餐</option><option>晚餐</option><option>點心</option></select></div>
+        <div class="actions" style="margin-top: 8px;">
+            <button class="btn primary" type="submit" style="flex: 1;">加入今日飲食</button>
+            <button class="btn ghost" type="button" id="clearFormBtn" onclick="document.getElementById('foodForm').reset()">清除</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section id="log" class="page"><div class="hero"><div><h1>飲食紀錄</h1><p>查看今天每一餐的攝取情況。</p></div><button class="btn primary" onclick="go('scan')">＋ 新增食物</button></div>
+  <div class="card"><div class="kpi"><h2 class="section-title" style="margin:0">今日紀錄</h2><span class="pill" id="logTotal"></span></div><div id="fullList" class="food-list" style="margin-top:14px"></div></div>
+</section>
+
+<section id="history" class="page"><div class="hero"><div><h1>歷史統計</h1><p>最近 7 天的熱量紀錄。</p></div></div>
+  <div class="card"><h2 class="section-title">每日熱量</h2><div id="historyChart" class="chart"></div></div>
+  <div class="grid g3" style="margin-top:18px" id="historyCards"></div>
+</section>
+
+<section id="profile" class="page"><div class="hero"><div><h1>我的資料</h1><p>設定一次，之後自動估算每日需求。</p></div></div>
+  <div class="grid profile-layout">
+    <div class="card"><h2 class="section-title">基本資料</h2><form id="profileForm">
+      <div class="field-inline" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="field"><label>年齡</label><input id="age" type="number" min="10" max="100" required /></div><div class="field"><label>生理性別</label><select id="sex"><option value="female">女性</option><option value="male">男性</option></select></div></div>
+      <div class="field-inline" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="field"><label>身高 cm</label><input id="height" type="number" min="100" max="230" step="0.1" required /></div><div class="field"><label>體重 kg</label><input id="weight" type="number" min="25" max="250" step="0.1" required /></div></div>
+      <div class="field"><label>活動量</label><select id="activity"><option value="1.2">久坐（幾乎沒有運動）</option><option value="1.375">輕度（每週 1–3 天）</option><option value="1.55">中度（每週 3–5 天）</option><option value="1.725">高度（每週 6–7 天）</option><option value="1.9">非常高度（體力工作／高強度訓練）</option></select></div>
+      <div class="field"><label>目標</label><select id="goal"><option value="maintain">維持體重</option><option value="lose">減重</option><option value="gain">增重</option></select></div>
+      <button class="btn primary" type="submit" style="margin-top:10px">儲存資料並重新計算</button>
+    </form></div>
+    <div class="card"><h2 class="section-title">身體與每日需求</h2><div id="profileSummary"></div></div>
+  </div>
+  <div class="footer-note">本網站提供的是一般性營養計算與紀錄工具，不取代醫師、營養師或其他專業醫療建議。BMI、BMR/TDEE 皆屬估算值。</div>
+</section>
+</main>
+</div>
+
+<script>
+const KEY='nutriscan_v1';
+const defaultState={profile:{age:20,sex:'female',height:165,weight:55,activity:1.375,goal:'maintain'},logs:{}};
+let state=JSON.parse(localStorage.getItem(KEY)||'null')||defaultState;
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+function todayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function dayLabel(key){return new Date(key+'T00:00:00').toLocaleDateString('zh-TW',{month:'numeric',day:'numeric'})}
+function calc(){let p=state.profile; const bmi=p.weight/((p.height/100)**2); const bmr=10*p.weight+6.25*p.height-5*p.age+(p.sex==='male'?5:-161); let tdee=bmr*Number(p.activity); if(p.goal==='lose')tdee-=400;if(p.goal==='gain')tdee+=300; return {bmi,bmr,tdee}}
+function getToday(){return state.logs[todayKey()]||[]}
+function totals(log=getToday()){return log.reduce((a,x)=>{a.kcal+=+x.kcal||0;a.protein+=+x.protein||0;a.fat+=+x.fat||0;a.carbs+=+x.carbs||0;a.sodium+=+x.sodium||0;return a},{kcal:0,protein:0,fat:0,carbs:0,sodium:0})}
+function go(page){if(page!=='scan' && typeof stopScanCamera==='function')stopScanCamera();document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===page));document.querySelectorAll('.navlinks button').forEach(x=>x.classList.toggle('active',x.dataset.page===page));renderAll();window.scrollTo({top:0,behavior:'smooth'})}
+window.go=go;
+document.querySelectorAll('.navlinks button').forEach(b=>b.onclick=()=>go(b.dataset.page));
+function fmt(n){return Math.round((Number(n)+Number.EPSILON)*1000)/1000}
+function fmtBMI(n){return Math.round((Number(n)+Number.EPSILON)*10)/10}
+function bmiClass(b){return b<18.5?'偏低':b<24?'正常':b<27?'過重':'偏高'}
+
+function renderDashboard(){const c=calc(),t=totals();document.getElementById('dashDate').textContent=new Date().toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+const left=Math.max(0,c.tdee-t.kcal);document.getElementById('statGrid').innerHTML=[['今日熱量',fmt(t.kcal)+' kcal','目標 '+Math.round(c.tdee)+' kcal'],['BMI',fmtBMI(c.bmi),bmiClass(c.bmi)],['蛋白質',fmt(t.protein)+' g','今日攝取'],['剩餘熱量',Math.round(left)+' kcal',left<=0?'已達目標':'可再攝取']].map((s,i)=>`<div class="card stat"><div class="label">${s[0]}</div><div class="value">${s[1]}</div><div class="sub">${s[2]}</div></div>`).join('');
+const ranges=[
+  ['蛋白質',t.protein,Math.max(45,state.profile.weight*1.0),Math.max(45,state.profile.weight*1.6),'g'],
+  ['脂肪',t.fat,c.tdee*0.20/9,c.tdee*0.35/9,'g'],
+  ['碳水',t.carbs,c.tdee*0.45/4,c.tdee*0.65/4,'g'],
+  ['鈉',t.sodium,500,2300,'mg']
+];
+function rangeStatus(value,min,max){
+  if(value<min)return {text:'⚠️ 攝取偏低',cls:'warn',bar:'low'};
+  if(value>max)return {text:'⚠️ 攝取過高',cls:'bad',bar:'over'};
+  return {text:'✓ 健康',cls:'good',bar:''};
+}
+document.getElementById('macroProgress').innerHTML=ranges.map(r=>{
+  const st=rangeStatus(r[1],r[2],r[3]);
+  const pct=Math.max(2,Math.min(100,(r[1]/r[3])*100));
+  return `<div class="progress-wrap"><div class="progress-row"><span>${r[0]}</span><span>${fmt(r[1])} / ${fmt(r[2])}–${fmt(r[3])} ${r[4]} <span class="pill ${st.cls}" style="margin-left:6px">${st.text}</span></span></div><div class="progress"><div class="bar ${st.bar}" style="width:${pct}%"></div></div></div>`
+}).join('');
+const list=getToday();document.getElementById('todayList').innerHTML=list.length?list.slice(-5).reverse().map(foodHtml).join(''):'<div class="empty">今天還沒有飲食紀錄</div>'}
+function foodHtml(x,idx){return `<div class="food-item"><div class="food-main"><div class="food-name">${esc(x.name)}</div><div class="food-meta">${x.meal} · ${x.serving||1} 份 · ${fmt(x.kcal)} kcal · P ${fmt(x.protein)}g · F ${fmt(x.fat)}g · C ${fmt(x.carbs)}g</div></div><div class="food-actions"><span class="pill">鈉 ${fmt(x.sodium)}mg</span>${idx!==undefined?`<button class="smallbtn" onclick="removeFood(${idx})">刪除</button>`:''}</div></div>`}
+function renderLog(){let list=getToday();document.getElementById('logTotal').textContent=`${list.length} 筆 · ${Math.round(totals().kcal)} kcal`;document.getElementById('fullList').innerHTML=list.length?list.map((x,i)=>foodHtml(x,i)).join(''):'<div class="empty">尚無紀錄，先新增一份食物吧。</div>'}
+function removeFood(i){let k=todayKey();state.logs[k].splice(i,1);save();renderAll()}
+window.removeFood=removeFood;
+function renderHistory(){let days=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);let key=todayKey(d),sum=totals(state.logs[key]||[]);days.push({key,kcal:sum.kcal})}let max=Math.max(1,...days.map(d=>d.kcal));document.getElementById('historyChart').innerHTML=days.map(d=>`<div class="chart-col"><b>${Math.round(d.kcal)}</b><div class="chart-bar" style="height:${Math.max(4,d.kcal/max*170)}px"></div><span>${dayLabel(d.key)}</span></div>`).join('');const c=calc();document.getElementById('historyCards').innerHTML=days.slice().reverse().map(d=>`<div class="card"><div class="kpi"><strong>${dayLabel(d.key)}</strong><span class="pill ${d.kcal<=c.tdee?'good':'warn'}">${Math.round(d.kcal)} kcal</span></div><div class="sub" style="margin-top:10px;color:var(--muted)">${d.kcal===0?'無紀錄':d.kcal<=c.tdee?'低於／符合目標':'高於今日目標'}</div></div>`).join('')}
+function renderProfile(){let p=state.profile,c=calc();['age','sex','height','weight','activity','goal'].forEach(id=>document.getElementById(id).value=p[id]);document.getElementById('profileSummary').innerHTML=`<div class="grid g2"><div class="card" style="box-shadow:none;background:#f7faf9"><div class="label">BMI</div><div class="value" style="font-size:26px">${fmtBMI(c.bmi)}</div><span class="pill good">${bmiClass(c.bmi)}</span></div><div class="card" style="box-shadow:none;background:#f7faf9"><div class="label">BMR</div><div class="value" style="font-size:26px">${Math.round(c.bmr)}</div><div class="sub">kcal / 天</div></div><div class="card" style="box-shadow:none;background:#f7faf9"><div class="label">TDEE</div><div class="value" style="font-size:26px">${Math.round(c.tdee)}</div><div class="sub">每日目標熱量</div></div><div class="card" style="box-shadow:none;background:#f7faf9"><div class="label">目標</div><div class="value" style="font-size:20px">${({maintain:'維持體重',lose:'減重',gain:'增重'})[p.goal]}</div></div></div>`}
+function renderAll(){renderDashboard();renderLog();renderHistory();renderProfile()}
+function esc(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+
+const foodDatabase = [
+  // 肉類/海鮮 (meat) - 改為熟食數據 (烹調後水分流失，每100g營養密度會提高)
+  { id:1, cat:'meat', name:'水煮雞胸肉', kcal:165, protein:31, fat:3.6, carbs:0, sodium:74 },
+  { id:2, cat:'meat', name:'水煮鮪魚罐頭', kcal:96, protein:21.1, fat:0.8, carbs:0, sodium:250 },
+  { id:3, cat:'meat', name:'煎鮭魚', kcal:206, protein:22.1, fat:13.0, carbs:0, sodium:61 },
+  { id:4, cat:'meat', name:'烤豬里肌', kcal:175, protein:28.0, fat:6.0, carbs:0, sodium:55 },
+  { id:5, cat:'meat', name:'水煮蛋 (1顆約50g)', kcal:72, protein:6.3, fat:4.8, carbs:0.6, sodium:71 },
+  // 澱粉/主食 (carb)
+  { id:6, cat:'carb', name:'白飯', kcal:183, protein:3.1, fat:0.3, carbs:41, sodium:1 },
+  { id:7, cat:'carb', name:'糙米飯', kcal:112, protein:2.6, fat:0.9, carbs:23.5, sodium:2 },
+  { id:8, cat:'carb', name:'烤地瓜', kcal:114, protein:1.4, fat:0.2, carbs:27.8, sodium:42 },
+  { id:9, cat:'carb', name:'燕麥片', kcal:389, protein:16.9, fat:6.9, carbs:66.3, sodium:2 },
+  { id:10, cat:'carb', name:'全麥吐司', kcal:252, protein:12.4, fat:4.2, carbs:42.7, sodium:400 },
+  // 蔬菜 (veg) - 改為水煮/燙過的數據
+  { id:11, cat:'veg', name:'燙高麗菜', kcal:25, protein:1.3, fat:0.2, carbs:5.2, sodium:15 },
+  { id:12, cat:'veg', name:'水煮花椰菜', kcal:35, protein:2.4, fat:0.4, carbs:7, sodium:41 },
+  { id:13, cat:'veg', name:'燙菠菜', kcal:24, protein:3.0, fat:0.3, carbs:3.8, sodium:80 },
+  { id:14, cat:'veg', name:'牛番茄 (生吃/沙拉)', kcal:18, protein:0.9, fat:0.2, carbs:3.9, sodium:5 },
+  // 水果 (fruit)
+  { id:15, cat:'fruit', name:'蘋果', kcal:52, protein:0.3, fat:0.2, carbs:14, sodium:1 },
+  { id:16, cat:'fruit', name:'香蕉', kcal:89, protein:1.1, fat:0.3, carbs:23, sodium:1 },
+  { id:17, cat:'fruit', name:'芭樂', kcal:38, protein:1.4, fat:0.1, carbs:8, sodium:1 },
+  { id:18, cat:'fruit', name:'奇異果', kcal:61, protein:1.1, fat:0.5, carbs:15, sodium:3 },
+  // 飲品 (drink)
+  { id:19, cat:'drink', name:'全脂牛奶', kcal:61, protein:3.2, fat:3.3, carbs:4.8, sodium:40 },
+  { id:20, cat:'drink', name:'無糖豆漿', kcal:33, protein:3.3, fat:1.6, carbs:1.1, sodium:2 },
+  { id:21, cat:'drink', name:'黑咖啡', kcal:2, protein:0.2, fat:0, carbs:0.3, sodium:2 },
+  { id:22, cat:'drink', name:'拿鐵 (無糖)', kcal:43, protein:2.3, fat:2.4, carbs:3.2, sodium:30 }
+];
+
+let currentCategory = 'all';
+
+function setCategory(cat) {
+  currentCategory = cat;
+  document.querySelectorAll('.chip').forEach((btn,i) => btn.classList.toggle('active', ['all','meat','carb','veg','fruit','drink'][i] === cat));
+  filterDatabase();
+}
+
+function filterDatabase() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  const filtered = foodDatabase.filter(food => {
+    const matchCat = currentCategory === 'all' || food.cat === currentCategory;
+    const matchSearch = food.name.toLowerCase().includes(query);
+    return matchCat && matchSearch;
+  });
+  
+  const container = document.getElementById('dbListContainer');
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="empty" style="padding: 20px;">找不到符合的食物</div>';
+    return;
+  }
+  
+  container.innerHTML = filtered.map(food => `
+    <div class="food-item clickable" onclick="fillFormFromDB(${food.id})">
+      <div class="food-main">
+        <div class="food-name">${food.name} <span style="font-weight:normal;font-size:12px;color:var(--muted)">(100g)</span></div>
+        <div class="food-meta">${food.kcal} kcal · 蛋白質 ${food.protein}g · 脂肪 ${food.fat}g · 碳水 ${food.carbs}g</div>
+      </div>
+      <div class="food-actions"><span class="pill" style="background:#eef2f7;color:var(--muted)">＋</span></div>
+    </div>
+  `).join('');
+}
+
+function fillFormFromDB(id) {
+  const food = foodDatabase.find(f => f.id === id);
+  if(!food) return;
+  
+  document.getElementById('foodName').value = food.name + ' (100g)';
+  document.getElementById('serving').value = 1;
+  document.getElementById('kcal').value = food.kcal;
+  document.getElementById('protein').value = food.protein;
+  document.getElementById('fat').value = food.fat;
+  document.getElementById('carbs').value = food.carbs;
+  document.getElementById('sodium').value = food.sodium;
+  
+  // 依據分類自動選擇合適的餐別預設
+  if(food.cat === 'fruit' || food.cat === 'drink') {
+      document.getElementById('meal').value = '點心';
+  }
+  
+  // 動畫回饋：讓表單區塊閃爍提示
+  const formCard = document.getElementById('formCard');
+  formCard.style.transition = 'box-shadow 0.3s, transform 0.2s';
+  formCard.style.boxShadow = '0 0 0 4px rgba(47,125,104,0.2)';
+  formCard.style.transform = 'scale(1.01)';
+  
+  // 若是手機版，點擊後自動向下捲動到表單
+  if (window.innerWidth <= 768) {
+      formCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  setTimeout(() => { 
+      formCard.style.boxShadow = 'var(--shadow)'; 
+      formCard.style.transform = 'scale(1)';
+  }, 400);
+}
+
+// 綁定表單送出與儲存事件
+document.getElementById('profileForm').onsubmit=e=>{e.preventDefault();state.profile={age:+age.value,sex:sex.value,height:+height.value,weight:+weight.value,activity:+activity.value,goal:goal.value};save();renderAll();alert('資料已儲存！')}
+document.getElementById('foodForm').onsubmit=e=>{
+    e.preventDefault();
+    let item={
+        name:foodName.value.trim(),
+        serving:+serving.value||1,
+        kcal:+(kcal.value * (serving.value||1)).toFixed(3), // 計算總熱量 (單筆熱量 x 份量)
+        protein:+(protein.value * (serving.value||1)).toFixed(3),
+        fat:+(fat.value * (serving.value||1)).toFixed(3),
+        carbs:+(carbs.value * (serving.value||1)).toFixed(3),
+        sodium:+(sodium.value * (serving.value||1)).toFixed(3),
+        meal:meal.value,
+        at:new Date().toISOString()
+    };
+    let k=todayKey();
+    state.logs[k]??=[];
+    state.logs[k].push(item);
+    save();
+    e.target.reset();
+    serving.value=1;
+    go('log');
+}
+
+
+// ── 營養標示 OCR + 手機拍照／即時鏡頭 ──
+const scanIds = id => document.getElementById(id);
+let scanImageData = null;
+let scanStream = null;
+let scanTorchOn = false;
+let scanWorking = false;
+let tesseractScriptLoading = null;
+const nutrientFields = [
+  {key:'kcal', name:'熱量', unit:'kcal'},
+  {key:'protein', name:'蛋白質', unit:'g'},
+  {key:'fat', name:'脂肪', unit:'g'},
+  {key:'carbs', name:'碳水化合物', unit:'g'},
+  {key:'sodium', name:'鈉', unit:'mg'}
+];
+function scanStatus(message, type='') {
+  const el=scanIds('ocrStatus');
+  el.textContent=message;
+  el.className='ocr-state'+(type?' '+type:'');
+}
+function scanSetBusy(isBusy){
+  scanWorking=isBusy;
+  scanIds('ocrRecognizeBtn').disabled=isBusy||!scanImageData;
+  scanIds('ocrRecognizeBtn').textContent=isBusy?'⏳ 辨識中…':'🔎 開始 OCR 辨識';
+  scanIds('ocrParseBtn').disabled=isBusy;
+  scanIds('ocrApplyBtn').disabled=isBusy || !scanIds('ocrApplyBtn').dataset.ready;
+}
+async function scanLoadImage(file){
+  if(scanWorking)return;
+  if(!file || !file.type.startsWith('image/')) {scanStatus('請選擇 JPG、PNG 或其他圖片檔案。','error');return}
+  if(file.size>22*1024*1024){scanStatus('照片超過 22 MB，請先縮小檔案。','error');return}
+  try{
+    scanStatus('正在載入照片…');
+    const url=URL.createObjectURL(file);
+    const img=new Image();
+    try {
+      await new Promise((resolve,reject)=>{
+        img.onload=resolve;
+        img.onerror=()=>reject(new Error('無法讀取圖片，請改用 JPG 或 PNG 格式。'));
+        img.src=url;
+      });
+      const maxSide=2200;
+      const scale=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight));
+      const canvas=document.createElement('canvas');
+      canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));
+      canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));
+      canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+      scanShowImage(canvas.toDataURL('image/jpeg',0.91));
+    }finally{URL.revokeObjectURL(url)}
+  }catch(error){scanStatus(error.message||'照片載入失敗','error')}
+}
+function scanShowImage(dataUrl){
+  scanImageData=dataUrl;
+  scanIds('ocrPreview').src=dataUrl;
+  scanIds('ocrPreview').hidden=false;
+  scanIds('ocrEmpty').hidden=true;
+  scanIds('ocrPhotoTools').hidden=false;
+  scanIds('ocrRecognizeBtn').disabled=false;
+  scanIds('ocrRawText').value='';
+  scanIds('ocrDetected').innerHTML='<div class="ocr-placeholder">照片已就緒，請點「開始 OCR 辨識」。</div>';
+  scanIds('ocrApplyBtn').dataset.ready='';
+  scanIds('ocrApplyBtn').disabled=true;
+  scanStatus('照片已載入'+(scanIds('ocrAutoScan').checked?'，準備自動辨識…':'，可按開始辨識。'),'ok');
+  stopScanCamera();
+  // 延後一個 event loop，先顯示新照片和狀態，再啟動語言模型。
+  if(scanIds('ocrAutoScan').checked) setTimeout(()=>{if(scanImageData===dataUrl && !scanWorking)scanRecognize()},0);
+}
+function scanClear(){
+  if(scanWorking)return;
+  scanImageData=null;
+  scanIds('ocrPreview').removeAttribute('src');
+  scanIds('ocrPreview').hidden=true;
+  scanIds('ocrEmpty').hidden=false;
+  scanIds('ocrPhotoTools').hidden=true;
+  scanIds('ocrRecognizeBtn').disabled=true;
+  scanIds('ocrApplyBtn').disabled=true;
+  scanIds('ocrApplyBtn').dataset.ready='';
+  scanIds('ocrRawText').value='';
+  scanIds('ocrDetected').innerHTML='<div class="ocr-placeholder">尚未有辨識結果。</div>';
+  scanIds('ocrFileInput').value='';scanIds('ocrCameraInput').value='';
+  scanStatus('照片已移除');
+}
+async function scanRotate(){
+  if(!scanImageData||scanWorking)return;
+  try {
+    const img=new Image();img.src=scanImageData;
+    await img.decode();
+    const canvas=document.createElement('canvas');
+    canvas.width=img.naturalHeight;canvas.height=img.naturalWidth;
+    const ctx=canvas.getContext('2d');
+    ctx.translate(canvas.width,0);ctx.rotate(Math.PI/2);
+    ctx.drawImage(img,0,0);
+    scanShowImage(canvas.toDataURL('image/jpeg',0.91));
+  }catch{scanStatus('旋轉失敗，請重新選擇照片。','error')}
+}
+async function startScanCamera(){
+  if(scanWorking)return;
+  if(!navigator.mediaDevices?.getUserMedia){
+    scanStatus('此瀏覽器環境不支援即時鏡頭；請用 HTTPS 網址開啟，或按「手機拍照」。','error');
+    return;
+  }
+  stopScanCamera();
+  try{
+    scanStatus('正在開啟鏡頭，請允許相機權限…');
+    let stream;
+    try{stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}}})}
+    catch(err){if(err.name==='OverconstrainedError')stream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});else throw err}
+    scanStream=stream;
+    const video=scanIds('ocrVideo');video.srcObject=stream;
+    scanIds('ocrCameraWrap').hidden=false;
+    await video.play();
+    scanUpdateTorchSupport();
+    scanStatus('鏡頭已開啟，請將營養標示放入畫面後拍攝。','ok');
+  }catch(error){
+    stopScanCamera();
+    const name=error?.name||'';
+    const message=name==='NotAllowedError'?'沒有取得相機權限，請在瀏覽器設定允許相機。':name==='NotFoundError'?'找不到可用的相機。':name==='NotReadableError'?'相機被其他程式使用中。':(error?.message||'無法開啟鏡頭。');
+    scanStatus(message+' 也可以選「手機拍照」或「上傳照片」。','error');
+  }
+}
+function scanUpdateTorchSupport(){
+  const button=scanIds('ocrTorchBtn');
+  const track=scanStream?.getVideoTracks()?.[0];
+  let supported=false;
+  try{supported=!!track?.getCapabilities?.()?.torch}catch{}
+  button.hidden=!supported;
+  button.disabled=!supported;
+  scanTorchOn=false;
+  button.textContent='🔦 開啟手電筒';
+  if(!supported && scanStream)scanStatus('鏡頭已開啟。此裝置／瀏覽器不提供網頁手電筒控制；可改用較亮環境拍攝。','ok');
+}
+async function scanToggleTorch(){
+  const track=scanStream?.getVideoTracks()?.[0];
+  if(!track)return;
+  const next=!scanTorchOn;
+  try{
+    await track.applyConstraints({advanced:[{torch:next}]});
+    scanTorchOn=next;
+    scanIds('ocrTorchBtn').textContent=next?'🔦 關閉手電筒':'🔦 開啟手電筒';
+  }catch(error){scanStatus('此瀏覽器無法控制手電筒，請改用手機內建相機拍照或增加環境光。','error');}
+}
+function stopScanCamera(){
+  scanTorchOn=false;
+  const torchBtn=scanIds('ocrTorchBtn');torchBtn.hidden=true;torchBtn.disabled=true;torchBtn.textContent='🔦 開啟手電筒';
+  if(scanStream){scanStream.getTracks().forEach(track=>track.stop());scanStream=null}
+  const video=scanIds('ocrVideo');if(video){video.pause();video.srcObject=null}
+  if(scanIds('ocrCameraWrap'))scanIds('ocrCameraWrap').hidden=true;
+}
+function scanCapture(){
+  const video=scanIds('ocrVideo');
+  if(!scanStream||!video.videoWidth){scanStatus('鏡頭尚未就緒，請再試一次。','error');return}
+  const maxSide=2200,scale=Math.min(1,maxSide/Math.max(video.videoWidth,video.videoHeight));
+  const canvas=document.createElement('canvas');
+  canvas.width=Math.round(video.videoWidth*scale);canvas.height=Math.round(video.videoHeight*scale);
+  canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);
+  scanShowImage(canvas.toDataURL('image/jpeg',0.94));
+}
+async function scanLoadTesseract(){
+  if(window.Tesseract?.createWorker)return;
+  if(tesseractScriptLoading)return tesseractScriptLoading;
+  const sources=[
+    'https://cdn.jsdelivr.net/npm/tesseract.js@6/dist/tesseract.min.js',
+    'https://unpkg.com/tesseract.js@6/dist/tesseract.min.js'
+  ];
+  tesseractScriptLoading=(async()=>{
+    let lastError;
+    for(const src of sources){
+      try{
+        await new Promise((resolve,reject)=>{
+          const script=document.createElement('script');script.src=src;script.async=true;
+          script.onload=()=>window.Tesseract?.createWorker?resolve():reject(new Error('OCR 套件未正確載入'));
+          script.onerror=()=>reject(new Error('OCR 套件下載失敗'));
+          document.head.appendChild(script);
+        });
+        return;
+      }catch(error){lastError=error}
+    }
+    throw new Error('無法下載 OCR 引擎：請確認網路連線，或更換瀏覽器後重試。'+(lastError?.message||''));
+  })().catch(e=>{tesseractScriptLoading=null;throw e});
+  return tesseractScriptLoading;
+}
+// OCR 對包裝上的黃色背景、陰影和小字較敏感，先放大與局部二值化。
+// 影像只在本機 Canvas 處理，不送到我們的伺服器。
+async function scanEnhancedImage(imageData, mode='adaptive'){
+  const image=new Image();image.src=imageData;await image.decode();
+  const w=image.naturalWidth,h=image.naturalHeight;
+  const factor=Math.min(2.5,Math.max(1,1100/Math.min(w,h)),2300/Math.max(w,h));
+  const W=Math.max(1,Math.round(w*factor)),H=Math.max(1,Math.round(h*factor));
+  const canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;
+  const ctx=canvas.getContext('2d',{willReadFrequently:true});
+  ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+  ctx.drawImage(image,0,0,W,H);
+  const data=ctx.getImageData(0,0,W,H);const px=data.data;
+  const g=new Uint8Array(W*H),hist=new Uint32Array(256);
+  for(let j=0,i=0;i<px.length;i+=4,j++){
+    const lum=Math.round(px[i]*0.299+px[i+1]*0.587+px[i+2]*0.114);
+    g[j]=lum;hist[lum]++;
+  }
+  let globalThreshold=125;
+  if(mode==='otsu'){
+    const n=W*H;let sum=0;for(let i=0;i<256;i++)sum+=i*hist[i];
+    let weightB=0,sumB=0,best=-1;
+    for(let i=0;i<256;i++){
+      weightB+=hist[i];if(!weightB)continue;let weightF=n-weightB;if(!weightF)break;
+      sumB+=i*hist[i];const score=(sumB/weightB-(sum-sumB)/weightF)**2*weightB*weightF;
+      if(score>best){best=score;globalThreshold=i}
+    }
+  }
+  let integral;
+  const stride=W+1;
+  if(mode==='adaptive'){
+    integral=new Uint32Array((W+1)*(H+1));
+    for(let y=1;y<=H;y++){
+      let rowsum=0;
+      for(let x=1;x<=W;x++){
+        rowsum+=g[(y-1)*W+(x-1)];
+        integral[y*stride+x]=integral[(y-1)*stride+x]+rowsum;
+      }
+    }
+  }
+  const radius=18;
+  for(let y=0;y<H;y++){
+    const y0=Math.max(0,y-radius),y1=Math.min(H,y+radius+1);
+    for(let x=0;x<W;x++){
+      const j=y*W+x;
+      let cutoff=globalThreshold;
+      if(integral){
+        const x0=Math.max(0,x-radius),x1=Math.min(W,x+radius+1);
+        const sum=integral[y1*stride+x1]-integral[y0*stride+x1]-integral[y1*stride+x0]+integral[y0*stride+x0];
+        cutoff=sum/((x1-x0)*(y1-y0))-11;
+      }
+      const v=g[j]<cutoff?0:255;const i=j*4;
+      px[i]=px[i+1]=px[i+2]=v;px[i+3]=255;
+    }
+  }
+  ctx.putImageData(data,0,0);
+  return canvas.toDataURL('image/png');
+}
+// 將繁體中文、英文、全形字和常見 OCR 格式轉為可解析的欄位。
+function scanNormalizeText(text){
+  return String(text||'').normalize('NFKC')
+    .replace(/\r/g,'')
+    .replace(/[：]/g,':').replace(/[，]/g,',')
+    .replace(/[－–—]/g,'-')
+    .replace(/[納纳]/g,'鈉');
+}
+function scanParseNutrition(text,columnIndex=0){
+  const raw=scanNormalizeText(text);
+  const lines=raw.split('\n').map(line=>line.trim()).filter(Boolean);
+  const labels={
+    kcal:/^(熱量|能量|Calories?|Energy)/i,
+    protein:/^(蛋白質|蛋白|Proteins?)/i,
+    fat:/^(總脂肪|脂肪|Total\s*Fat|Fats?)/i,
+    carbs:/^(總碳水化合物|碳水化合物|碳水|Total\s*Carbohydrates?|Carbohydrates?)/i,
+    sodium:/^(鈉|Sodium)/i
+  };
+  function getLabel(line){
+    // OCR 可能在第一個中文字前多讀到框線或一兩個雜字。
+    const cleaned=line.replace(/^[|／\/\\:;,.!！、~*•_\-\s0-9A-Za-z]{0,4}/,'').trim();
+    if(/^(?:飽和|反式|單元不飽和|多元不飽和|Saturated|Trans)\s*(?:脂肪|Fat)/i.test(cleaned))return null;
+    for(const [key,re] of Object.entries(labels)){
+      const m=cleaned.match(re);
+      if(m)return {key,length:line.indexOf(m[0])+m[0].length};
+      // 常見多辨識一個中文前綴字：「和蛋白質」
+      if(cleaned.length>2 && re.test(cleaned.slice(1))) {
+        const sub=cleaned.slice(1).match(re);
+        if(sub)return {key,length:line.indexOf(sub[0])+sub[0].length};
+      }
+    }
+    return null;
+  }
+  function numbers(str){
+    const list=[];const re=/(?:\d{1,3}(?:,\d{3})+|\d+)(?:[.．]\d+)?|[.．]\d+/g;
+    let m;
+    while((m=re.exec(str))!==null){
+      const suffix=str.slice(re.lastIndex).trimStart();
+      if(/^[%％]/.test(suffix))continue;
+      const n=Number(m[0].replace(/,/g,'').replace('．','.'));
+      if(Number.isFinite(n)&&n>=0)list.push(n);
+    }
+    return list;
+  }
+  const fields={};const flags={};
+  let lastCarbsLine=-1;
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i];const info=getLabel(line);
+    if(!info)continue;
+    const key=info.key;
+    let vals=numbers(line.slice(info.length));
+    if(vals.length<2){
+      for(let j=i+1;j<Math.min(lines.length,i+3);j++){
+        if(getLabel(lines[j]))break;
+        vals=vals.concat(numbers(lines[j]));
+        if(vals.length>=2)break;
+      }
+    }
+    if(vals.length && fields[key]===undefined)fields[key]=vals.slice(0,5);
+    if(key==='carbs')lastCarbsLine=i;
+  }
+  const servingMatch=raw.match(/每[一1]?份(?:量)?\s*[:]?\s*(\d+(?:\.\d+)?)\s*(公克|克|g|毫升|ml)/i);
+  const packageMatch=raw.match(/(?:本包裝|本包装|每包裝|每包装)(?:含有|含)?\s*[:]?\s*(\d+(?:\.\d+)?)\s*份/);
+  const nameMatch=raw.match(/(?:品名|商品名稱|產品名稱)\s*[:]\s*([^\n]{2,35})/);
+  const declaredServing=servingMatch?Number(servingMatch[1]):null;
+  const has100=/(?:每\s*100\s*(?:公克|克|g|毫升|ml))/i.test(raw);
+  const factor=declaredServing && has100 && declaredServing>0 && declaredServing<=2000 ? declaredServing/100 : null;
+  // 表格常見「9.8 公克 32.5 公克」，但 OCR 可能讀成「9.8 52 325」。
+  // 使用「每份量 / 100」比例，挑選合理的前兩欄，僅將小數點修復結果標為待核對。
+  if(factor){
+    for(const [key,vals] of Object.entries(fields)){
+      if(vals.length<2)continue;
+      // OCR 有時會把 539 誤辨成 0.539；也可能把 5.0 辨成 0.5 或 50。
+      // 僅在「每份量/100」兩欄的比例能相互驗證時，才接受移動小數點。
+      const variants=n=>{
+        const out=[{num:n,changed:false}];
+        if(!(n>0))return out;
+        const upper=key==='kcal'?2500:key==='sodium'?100000:150;
+        if(['protein','fat','carbs'].includes(key)&&n>=1){for(const divisor of [10,100,1000])out.push({num:Number((n/divisor).toPrecision(10)),changed:true})}
+        if(key==='sodium' && n>10)out.push({num:n/10,changed:true});
+        if(n<(key==='kcal'?4:2)){
+          for(const scale of [10,100,1000]){
+            const shifted=Number((n*scale).toPrecision(10));
+            if(shifted<=upper)out.push({num:shifted,changed:true});
+          }
+        }
+        return out;
+      };
+      let best=null;
+      for(let i=0;i<Math.min(vals.length,4);i++){
+        for(let j=i+1;j<Math.min(vals.length,5);j++){
+          for(const a of variants(vals[i]))for(const b of variants(vals[j])){
+            if(a.num<=0||b.num<=0)continue;
+            const diff=Math.abs(a.num/b.num-factor)/factor;
+            const priority=(i===0 && j===1?0:0.12) + (a.changed?0.065:0)+(b.changed?0.065:0);
+            const macroFactor={protein:4,fat:9,carbs:4}[key];
+            const impossible=macroFactor && fields.kcal
+              ? ((Number.isFinite(fields.kcal[0]) && a.num*macroFactor>fields.kcal[0]*1.2+12?2:0) + (Number.isFinite(fields.kcal[1]) && b.num*macroFactor>fields.kcal[1]*1.2+12?2:0)) : 0;
+            const score=diff+priority+impossible;
+            if(best===null || score<best.score)best={score,diff,a:a.num,b:b.num,i,j,changed:a.changed||b.changed};
+          }
+        }
+      }
+      if(best && best.diff<0.09){
+        const originalPair=vals.slice(0,2);
+        fields[key]=[best.a,best.b];
+        if(best.changed || best.j!==1){
+          flags[key]=`OCR 原始數值：${originalPair.join('、')}；依每份量比例校正為 ${best.a}、${best.b}，請核對照片。`;
+        }
+      }else fields[key]=vals.slice(0,2);
+    }
+  }else{
+    for(const [key,vals] of Object.entries(fields))fields[key]=vals.slice(0,2);
+  }
+  // 最後一列的「鈉」可能被黃底、邊框辨識為 ih、iA 等錯字。
+  // 只在前面已辨識到碳水且找不到鈉時，依表格順序和兩欄比例提出「待核對」結果。
+  if(fields.sodium===undefined && lastCarbsLine>=0){
+    const tail=lines.slice(lastCarbsLine+1);
+    const matches=[];
+    for(const line of tail){
+      if(getLabel(line))continue;
+      const ns=numbers(line);
+      if(ns.length<2)continue;
+      if(!/(?:毫克|mg)/i.test(line) && Math.max(...ns)<100)continue;
+      if(!/(?:毫克|mg)/i.test(line) && ns.every(n=>n<40))continue;
+      let candidate=null;
+      for(let i=0;i<Math.min(3,ns.length);i++){
+        const rawDigits=String(ns[i]).replace(/\D/g,'');
+        const ca=[ns[i]];
+        // OCR 將「141 毫克」的單位誤判為「14125」時，嘗試抽取前面數字。
+        if(rawDigits.length>=5){ca.push(Number(rawDigits.slice(0,3)),Number(rawDigits.slice(0,2)))}
+        for(let j=i+1;j<Math.min(ns.length,4);j++)for(const a of ca){
+          const b=ns[j];if(!(a>=20&&b>=20))continue;
+          const diff=factor?Math.abs(a/b-factor)/factor:Infinity;
+          if(factor && diff>0.10)continue;
+          if(!candidate||diff<candidate.diff)candidate={a,b,diff};
+        }
+      }
+      if(candidate)matches.push(candidate);
+    }
+    if(matches.length===1){
+      fields.sodium=[matches[0].a,matches[0].b];
+      flags.sodium='由最後一行數字推測，請務必核對原圖';
+    }
+  }
+  // 先保護原圖第二欄的小數點：若既有解析把第二欄放大十倍，
+  // 但第一欄縮小十倍也符合比例，優先保留原始第二欄（標示待核對）。
+  if(factor){
+    for(const key of ['protein','fat','carbs']){
+      const sourceLine=lines.find(line=>getLabel(line)?.key===key);
+      const rawNumbers=sourceLine?numbers(sourceLine.slice(getLabel(sourceLine).length)):[];
+      const pair=fields[key];
+      if(rawNumbers.length<2||!pair||pair.length<2)continue;
+      const [a,b]=rawNumbers;
+      if(a>=5&&b>0&&b<10&&a/(b*factor)>2.5){
+        const scaled=[10,100,1000].map(n=>a/n);
+        const matches=scaled.some(n=>Math.abs(n-b*factor)/Math.max(b*factor,0.001)<0.15);
+        if(!matches)continue;
+        // 依另一欄的標示值推回每份量；第二欄本身也可能四捨五入，故一律待核對。
+        const estimated=Number((b*factor+1e-9).toFixed(2));
+        fields[key]=[estimated,b];
+        flags[key]=`原始數值 ${a} / ${b}，第一欄小數點疑似遺失；依第二欄及份量推估為約 ${estimated} g，請核對原圖。`;
+      }
+    }
+  }
+  // OCR 校驗 v5：即使第一輪沒有找到碳水，仍用雙欄份量比例排除 1470/45、8/0.25 等錯位。
+  // 僅有單一欄位或雙欄不吻合時，不擅自猜測缺失的小數位。
+  if(factor){
+    for(const key of ['kcal','protein','fat','carbs','sodium']){
+      const pair=fields[key];
+      if(!pair || pair.length<2 || !Number.isFinite(pair[0]) || !Number.isFinite(pair[1]))continue;
+      const [a,b]=pair;
+      if(a===0&&b===0)continue;
+      const expected=b*factor;
+      const rel=Math.abs(a-expected)/Math.max(Math.abs(expected),0.001);
+      if(rel<0.12)continue;
+      // 檢查 OCR 漏讀小數點或額外的尾端 0，需符合每份/每100欄比例。
+      const proposals=[];
+      for(const scale of [0.001,0.01,0.1,10,100,1000]){
+        const corrected=Number((a*scale).toPrecision(10));
+        if(corrected>=0 && Math.abs(corrected-expected)/Math.max(Math.abs(expected),0.001)<0.12)
+          proposals.push({col:0,value:corrected,scale});
+        const correctedB=Number((b*scale).toPrecision(10));
+        if(correctedB>=0 && Math.abs(a-correctedB*factor)/Math.max(Math.abs(a),0.001)<0.12)
+          proposals.push({col:1,value:correctedB,scale});
+      }
+      // 單純一位小數誤差可修正；其餘只警示並拒絕不合理的值。
+      proposals.sort((x,y)=>Math.abs(Math.log10(x.scale))-Math.abs(Math.log10(y.scale)));
+      const chosen=proposals.find(x=>{
+        const value=x.value;
+        if(key==='kcal')return value<=2500;
+        if(key==='sodium')return value<=100000;
+        return value<=150;
+      });
+      if(chosen){
+        const original=pair[chosen.col];
+        pair[chosen.col]=chosen.value;
+        flags[key]=`原始數值 ${a} / ${b}；依每份量比例將 ${original} 修正為 ${chosen.value}，請對照包裝。`;
+      }else{
+        // 對於顯著錯位的數值，保留另一欄但阻止不可信的欄位被直接套用。
+        const suspect=(a>expected*2 || (key!=='kcal'&&a>150))?0:1;
+        pair[suspect]=null;
+        flags[key]=`兩欄 ${a} / ${b} 與每份量比例不符，已暫停使用其中一欄；請核對原圖。`;
+      }
+    }
+  }
+  // 常見 OCR 將 0.83 辨成 8、83：有每 100mL 0.25g 時，校正到 0.8g
+  // 但精度不足以推回 0.83，故一定標示待核對。
+  for(let col=0;col<2;col++){
+    const kcal=fields.kcal?.[col];
+    if(Number.isFinite(kcal)&&kcal>0){
+      const macros=[['protein',4],['fat',9],['carbs',4]];
+      for(const [key,mult] of macros){
+        const value=fields[key]?.[col];
+        if(!Number.isFinite(value)||value<=0)continue;
+        if(value*mult>kcal*1.2+12){
+          fields[key][col]=null;
+          flags[key]=`原始 ${value}g 與 ${kcal} kcal 不相容，未採用；請人工核對。`;
+        }
+      }
+    }
+  }
+  // 第 2 道驗證：熱量應大致與蛋白質、脂肪、碳水化合物的熱量相符。
+  // 一般標示可能有膳食纖維、糖醇等差異，因此只處理明顯相差 10 倍以上、
+  // 且小數點移動後與三大營養素推算值接近的情況；不能作為精確驗證。
+  if(fields.kcal){
+    for(let col=0;col<Math.min(2,fields.kcal.length);col++){
+      const p=fields.protein?.[col], f=fields.fat?.[col], c=fields.carbs?.[col];
+      if(![p,f,c].every(n=>Number.isFinite(n)))continue;
+      const predicted=4*p+9*f+4*c;
+      const current=fields.kcal[col];
+      if(predicted<=30 || !Number.isFinite(current) || current<=0)continue;
+      if(current<predicted/8){
+        const scales=[10,100,1000];
+        const candidates=scales.map(k=>({value:Number((current*k).toPrecision(10)),err:Math.abs(current*k-predicted)/predicted}))
+          .filter(x=>x.value<=2500 && x.err<0.18).sort((a,b)=>a.err-b.err);
+        if(candidates.length){
+          const fixed=candidates[0].value;
+          fields.kcal[col]=fixed;
+          flags.kcal=`OCR 熱量小數點疑似錯位：原值 ${current} kcal，依三大營養素交叉核對調整為 ${fixed} kcal；請確認包裝。`;
+        }else{
+          flags.kcal=`熱量 ${current} kcal 與蛋白質、脂肪及碳水推估不一致，請手動核對包裝。`;
+        }
+      }
+    }
+  }
+  // 第 3 道驗證：個別三大營養素提供的熱量不應明顯超過標示總熱量。
+  // 尤其可攔下 OCR 將 0.83 公克誤讀成 83 公克的危險情況。
+  for(let col=0;col<2;col++){
+    const energy=fields.kcal?.[col];
+    for(const [key,multiplier] of [['protein',4],['fat',9],['carbs',4]]){
+      const current=fields[key]?.[col];
+      if(!Number.isFinite(current)||current<=0)continue;
+      const tooHigh=Number.isFinite(energy)&&energy>0&&current*multiplier>energy*1.20+12;
+      const implausible=current>150;
+      if(!tooHigh&&!implausible)continue;
+      // 只有兩欄一致時才提出校正值，單欄絕不猜測小數點。
+      const other=fields[key]?.[1-col];
+      const expected=factor&&Number.isFinite(other)&&other>0
+        ? (col===0 ? other*factor : other/factor) : null;
+      let corrected=null;
+      if(expected!==null){
+        for(const divisor of [10,100,1000]){
+          const candidate=Number((current/divisor).toPrecision(10));
+          const relative=Math.abs(candidate-expected)/Math.max(expected,0.001);
+          if(relative<0.11 && (!Number.isFinite(energy)||candidate*multiplier<=energy*1.2+12)){
+            corrected=candidate;break;
+          }
+        }
+      }
+      if(corrected!==null){
+        fields[key][col]=corrected;
+        flags[key]=`原始辨識 ${current} ${key==='protein'?'g':key==='fat'?'g':'g'}，依雙欄份量比例與熱量檢查改為 ${corrected} g，務必核對原圖。`;
+      }else{
+        fields[key][col]=null;
+        flags[key]=`原始辨識 ${current} g 與熱量 ${energy??'未知'} kcal 不合理，暫不採用，請人工填入。`;
+      }
+    }
+  }
+  // 保守防呆：每份飲料的熱量 1470 kcal 若與每 100mL 45 kcal 不符，不能直接套用。
+  if(factor && fields.kcal?.length>=2){
+    const a=fields.kcal[0],b=fields.kcal[1];
+    if(Number.isFinite(a)&&Number.isFinite(b)&&a>0&&b>0 && Math.abs(a/(b*factor)-1)>0.2){
+      fields.kcal[0]=null;
+      flags.kcal='熱量雙欄比例不一致，已停止自動填入；請核對。';
+    }
+  }
+  // 非零蛋白質／脂肪／碳水的總估算熱量明顯高於總熱量時，標示警告。
+  for(let col=0;col<2;col++){
+    const energy=fields.kcal?.[col];
+    if(!Number.isFinite(energy)||energy<=0)continue;
+    const known=[['protein',4],['fat',9],['carbs',4]];
+    const estimated=known.reduce((acc,[key,m])=>acc+(Number.isFinite(fields[key]?.[col])?fields[key][col]*m:0),0);
+    if(estimated>energy*1.25+15)flags.kcal='營養素換算熱量高於標示熱量，可能有 OCR 誤讀；請人工核對。';
+  }
+  const values={};
+  for(const [key,vals] of Object.entries(fields)){
+    if(vals.length>Number(columnIndex) && Number.isFinite(vals[Number(columnIndex)]))values[key]=vals[Number(columnIndex)];
+  }
+  return {values,columns:fields,flags,serving:servingMatch?`${servingMatch[1]} ${servingMatch[2]}`:'',pack:packageMatch?Number(packageMatch[1]):null,name:nameMatch?nameMatch[1].trim():''};
+}
+function scanRenderParsed(){
+  const text=scanIds('ocrRawText').value;
+  const parsed=scanParseNutrition(text,Number(scanIds('ocrColumnMode').value));
+  const hits=nutrientFields.filter(f=>parsed.values[f.key]!==undefined);
+  scanIds('ocrDetected').innerHTML=nutrientFields.map(f=>{
+    const val=parsed.values[f.key];
+    return `<div class="ocr-line"><span>${f.name}${parsed.flags[f.key]?`<em title="此數值需人工核對">⚠ 待核對</em>`:''}</span><strong>${val===undefined?'<span style="color:#b45f4f">未辨識</span>':`${esc(String(val))} ${f.unit}`}</strong></div>`;
+  }).join('')+(parsed.serving||parsed.pack?`<div class="ocr-hint">${parsed.serving?'每份量：'+esc(parsed.serving)+'　':''}${parsed.pack?'本包裝：'+parsed.pack+' 份':''}</div>`:'')+
+    (hits.length<5?'<div class="notice">部分數值未辨識，請參考原圖手動核對及補上，避免把缺漏當成 0。</div>':'')+
+    (Object.keys(parsed.flags).length?'<div class="notice">⚠ 有數值經過小數點校正或推測；請以原包裝為準。<details style="margin-top:8px"><summary style="cursor:pointer;font-weight:700">查看校正原因</summary><div style="margin-top:6px">'+Object.entries(parsed.flags).map(([key,msg])=>'<div style="margin:5px 0">'+esc(nutrientFields.find(f=>f.key===key)?.name||key)+'：'+esc(msg)+'</div>').join('')+'</div></details></div>':'');
+  scanIds('ocrApplyBtn').dataset.ready=hits.length?'1':'';
+  scanIds('ocrApplyBtn').disabled=!hits.length||scanWorking;
+  const unsure=Object.keys(parsed.flags).length;
+  scanStatus(hits.length?`已解析 ${hits.length}/5 項營養數值${unsure?`，其中 ${unsure} 項需人工核對`:''}；請對照包裝確認。`:'沒有抓到營養數值，可展開文字修正後重新解析。',hits.length?'ok':'error');
+  return parsed;
+}
+async function scanRecognize(){
+  if(!scanImageData||scanWorking)return;
+  let worker=null;
+  scanSetBusy(true);
+  try{
+    scanStatus('正在準備 OCR 引擎；首次使用需要網路下載繁體中文語言模型…');
+    await scanLoadTesseract();
+    worker=await window.Tesseract.createWorker(['chi_tra','eng'],1,{
+      logger:msg=>{
+        if(msg.status==='recognizing text')scanStatus(`正在分析文字：${Math.round((msg.progress||0)*100)}%`);
+        else if(msg.status==='loading language traineddata')scanStatus('正在下載 OCR 語言模型…');
+      }
+    });
+    // 螢幕上的是原圖；實際 OCR 對影像執行局部背景去除與放大。
+    if(worker.setParameters)await worker.setParameters({tessedit_pageseg_mode:'6',preserve_interword_spaces:'1'});
+    scanStatus('正在改善文字清晰度和背景對比…');
+    const enhanced=await scanEnhancedImage(scanImageData,'adaptive');
+    scanStatus('正在辨識營養標示（強化影像）…');
+    const first=await worker.recognize(enhanced);
+    let recognized=(first?.data?.text||'').trim();
+    let firstParsed=scanParseNutrition(recognized,Number(scanIds('ocrColumnMode').value));
+    let fields=Object.keys(firstParsed.values).length;
+    if(fields<5 || !firstParsed.pack || Object.keys(firstParsed.flags).length>0){
+      scanStatus(`已讀到 ${fields}/5 項，改用第二種影像處理交叉核對…`);
+      const alt=await scanEnhancedImage(scanImageData,'otsu');
+      const second=await worker.recognize(alt);
+      const text2=(second?.data?.text||'').trim();
+      const p2=scanParseNutrition(text2,Number(scanIds('ocrColumnMode').value));
+      if(Object.keys(p2.values).length>fields)recognized=text2;
+      else if(text2){
+        // 合併互補的辨識列，避免第二次辨識把已成功的數字洗掉。
+        const missing=nutrientFields.filter(f=>firstParsed.values[f.key]===undefined && p2.values[f.key]!==undefined);
+        if(missing.length){
+          const lines=text2.split('\n');const matched=[];
+          for(const field of missing){
+            const patterns={kcal:/熱量|Calories?|Energy/i,protein:/蛋白質|Proteins?/i,fat:/^\s*脂肪|Total\s*Fat/i,carbs:/碳水化合物|Carbohydrates?/i,sodium:/鈉|Sodium/i};
+            const line=lines.find(l=>patterns[field.key].test(l));
+            if(line)matched.push(line);
+          }
+          if(matched.length)recognized+='\n'+matched.join('\n');
+        }
+      }
+      // 補全每份量、包裝份數：這些文字通常在第二輪更清楚。
+      const joined=scanParseNutrition(recognized,Number(scanIds('ocrColumnMode').value));
+      if(!joined.pack && p2.pack){
+        const packageLine=text2.split('\n').find(l=>/本包裝|本包装|每包裝|每包装/.test(l));
+        if(packageLine)recognized+='\n'+packageLine;
+      }
+      if(!joined.serving && p2.serving){
+        const servingLine=text2.split('\n').find(l=>/每[一1]?份量?/.test(l));
+        if(servingLine)recognized+='\n'+servingLine;
+      }
+    }
+    scanIds('ocrRawText').value=recognized;
+    if(!recognized)throw new Error('找不到文字，請讓營養標示占滿照片、光線充足且沒有反光。');
+    scanRenderParsed();
+  }catch(error){
+    scanStatus((error?.message||'OCR 辨識失敗')+' 可嘗試重拍、更換網路，或展開 OCR 文字手動輸入。','error');
+    scanIds('ocrDetails').open=true;
+  }finally{
+    if(worker)try{await worker.terminate()}catch{}
+    scanSetBusy(false);
+  }
+}
+function scanClearMissingRequirements(){
+  for(const field of nutrientFields){
+    const input=scanIds(field.key);
+    if(field.key!=='kcal')input.required=false;
+    input.placeholder='';
+  }
+}
+function scanApply(){
+  scanClearMissingRequirements();
+  const parsed=scanParseNutrition(scanIds('ocrRawText').value,Number(scanIds('ocrColumnMode').value));
+  if(!Object.keys(parsed.values).length){scanStatus('請先辨識或輸入營養標示文字。','error');return}
+  for(const f of nutrientFields){
+    const el=scanIds(f.key);
+    el.value=parsed.values[f.key]===undefined?'':parsed.values[f.key];
+    if(parsed.values[f.key]===undefined){el.required=true;el.placeholder='請核對包裝後填入';}
+  }
+  scanIds('serving').value=1;
+  scanIds('ocrApplyBtn').dataset.ready='applied';
+  if(parsed.name&&!scanIds('foodName').value.trim())scanIds('foodName').value=parsed.name;
+  scanStatus('已填入營養表單；請檢查食物名稱、欄位、每份量、營養素和份數，再按「加入今日飲食」。','ok');
+  scanIds('formCard').scrollIntoView({behavior:'smooth',block:'start'});
+  if(!scanIds('foodName').value.trim())scanIds('foodName').focus({preventScroll:true});
+}
+scanIds('ocrTakePhotoBtn').addEventListener('click',()=>scanIds('ocrCameraInput').click());
+scanIds('ocrUploadBtn').addEventListener('click',()=>scanIds('ocrFileInput').click());
+scanIds('ocrCameraInput').addEventListener('change',e=>{if(e.target.files[0])scanLoadImage(e.target.files[0])});
+scanIds('ocrFileInput').addEventListener('change',e=>{if(e.target.files[0])scanLoadImage(e.target.files[0])});
+scanIds('ocrLiveBtn').addEventListener('click',startScanCamera);
+scanIds('ocrStopBtn').addEventListener('click',()=>{stopScanCamera();scanStatus('鏡頭已關閉。')});
+scanIds('ocrCaptureBtn').addEventListener('click',scanCapture);
+scanIds('ocrTorchBtn').addEventListener('click',scanToggleTorch);
+scanIds('ocrRotateBtn').addEventListener('click',scanRotate);
+scanIds('ocrResetBtn').addEventListener('click',scanClear);
+scanIds('ocrRecognizeBtn').addEventListener('click',scanRecognize);
+scanIds('ocrParseBtn').addEventListener('click',scanRenderParsed);
+scanIds('ocrColumnMode').addEventListener('change',()=>{if(scanIds('ocrRawText').value.trim())scanRenderParsed()});
+scanIds('ocrApplyBtn').addEventListener('click',scanApply);
+scanIds('clearFormBtn').addEventListener('click',scanClearMissingRequirements);
+scanIds('foodForm').addEventListener('submit',e=>{
+  if(scanIds('ocrApplyBtn').dataset.ready==='applied'){
+    const absent=nutrientFields.filter(f=>scanIds(f.key).value.trim()==='');
+    if(absent.length){
+      e.preventDefault();e.stopImmediatePropagation();
+      scanStatus('請先依包裝填入未辨識的營養數值：'+absent.map(f=>f.name).join('、')+'。','error');
+      absent[0]&&scanIds(absent[0].key).focus();return;
+    }
+  }
+  scanClearMissingRequirements();
+},true);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopScanCamera()});
+window.addEventListener('pagehide',stopScanCamera);
+// 在 HTTPS 環境可加入主畫面；瀏覽器離線功能是額外加值，OCR 首次使用仍需網路。
+if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+
+// 初始化
+filterDatabase();
+renderAll();
+</script>
+</body>
+</html>
